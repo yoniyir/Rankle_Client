@@ -21,6 +21,42 @@ db = PyMongo(app).db
 
 
 
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user = request.form.to_dict()
+        users = db.users
+        if users.find_one({"username": user["username"]}):
+            currentUser = users.find_one({"username": user["username"],"password": user["password"]})
+            if currentUser:
+                session['id']=str(currentUser['_id'])
+                session['username']=f'{currentUser["username"]}'
+                return f'<h1>Sucssefully logged in to {session["username"]}!</h1>'
+            else:
+                return "Incorrect Password"
+        else:
+            return "User doesnt exist!"
+
+    else:
+        return "<h1> Welcome to login!</h1></br><h2>Please send credentials by POST</h2></>"
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        user = request.form.to_dict()
+        users = db.users
+        if users.find_one({"username": user["username"]}):
+            return "Username is taken"
+        else:
+            users.insert(user)
+            session['id']=str(user['_id'])
+            session['username']=f'{user["username"]}'
+            return f'{user["username"]} Signed-Up Sucssefully'
+
+
+
 @app.route("/add_group", methods=["POST"])
 def add_group():
     if request.method == "POST":
@@ -35,25 +71,17 @@ def add_group():
     
 
 
-
-
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
+@app.route("/add_player", methods=["POST"])
+def add_player():
     if request.method == "POST":
-        user = request.form.to_dict()
-        users = db.users
-        if users.find_one({"username": user["username"]}):
-            current_user = users.find_one({"username": user["username"], "password": user["password"]})
-            session['id']=str(current_user['_id'])
-            return f'<h1>Sucssefully logged in to {user["username"]}!</h1>'
+        player = request.form.to_dict()
+        players = db.players
+        if players.find_one({"name":player["name"],"groupId":player["groupId"]}):
+            return f'The name {player["name"]} exists in {player["groupId"]}!'
         else:
-            users.insert(user)
-            return f'<h1>Sucssefully added {user["username"]}</h1>'
-
-    else:
-        return "Send by post username and password"
-
+            players.insert(player)
+            return f'<h1>Sucssefully added {player["name"]} </h1>'
+    
 
 
 @app.route("/whoami")
@@ -62,9 +90,9 @@ def whoami():
     return session
 
 
-@app.route("/get_users")
-def get_users():
-    users = db.users.find()
+@app.route("/get_group_players")
+def get_group_players():
+    users = db.players.find({"groupId":request.args.get("groupId")})
     users_json = dumps(list(users))
 
     return users_json
