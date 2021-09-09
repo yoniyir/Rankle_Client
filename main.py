@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, redirect, session
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
 from flask_session import Session
+import random
 
 
 # db.<collection_name>.find_one() -> returns one object
@@ -105,3 +106,37 @@ def get_user_groups():
 @app.route("/")
 def hello_world():
     return redirect('/login')
+
+def Number_possible_Size_groups(active_players):
+    num = len(active_players)
+    lst1 = []
+    if num == 1:
+        return "no option to spilt to groups"
+    elif num == 2:
+        lst1.append(2)
+        return lst1
+    else:
+        num = int(num/2)
+        for i in range(2, num+1):
+            lst1.append(i)
+        return lst1
+
+
+def randomaize_The_Active_players(active_players,size):
+    lst =[]
+    num_of_active_players = int(len(active_players))
+    num_of_groups = int(num_of_active_players/size)
+    if num_of_active_players % size == 1:
+        other = random.choice(active_players)
+        active_players.remove(other)
+    else:
+        other = 0
+
+    for i in range(0,num_of_groups):
+        temp = []
+        for j in range(0,size):
+            random_player = random.choice(active_players)
+            temp.append(random_player)
+            active_players.remove(random_player)
+        lst.append(temp)
+    return lst , other
