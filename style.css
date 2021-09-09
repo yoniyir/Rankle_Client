@@ -1,0 +1,11 @@
+body{
+    text-align: center;
+}
+
+.teamName{
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+    padding: 5px;
+    background-color: grey;
+}

@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, redirect, session
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
+from flask_session import Session
+
 
 # db.<collection_name>.find_one() -> returns one object
 # db.<collection_name>.find() -> returns all object from collection ->
@@ -16,9 +18,11 @@ app.config[
     "MONGO_URI"
 ] = "mongodb+srv://yoni:Yoni1997@cluster0.wpwdy.mongodb.net/teams-app-db?retryWrites=true&w=majority"
 app.secret_key = "testing"
-
 db = PyMongo(app).db
+app.config['SESSION_TYPE'] = 'filesystem'
 
+sess = Session(app)
+sess.init_app(app)
 
 
 
@@ -30,13 +34,13 @@ def login():
         if users.find_one({"username": user["username"]}):
             currentUser = users.find_one({"username": user["username"],"password": user["password"]})
             if currentUser:
-                session['id']=str(currentUser['_id'])
-                session['username']=f'{currentUser["username"]}'
-                return f'<h1>Sucssefully logged in to {session["username"]}!</h1>'
+                sess.id=str(currentUser['_id'])
+                sess.username=f'{currentUser["username"]}'
+                return jsonify({"status": "Ok","userId":sess.id})
             else:
-                return "Incorrect Password"
+                return jsonify({"status": "Error","message":"Incorrect password"})
         else:
-            return "User doesnt exist!"
+            return jsonify({"status": "Error","message":"User doesnt exist"})
 
     else:
         return "<h1> Welcome to login!</h1></br><h2>Please send credentials by POST</h2></>"
@@ -84,12 +88,6 @@ def add_player():
     
 
 
-@app.route("/whoami")
-def whoami():
-
-    return session
-
-
 @app.route("/get_group_players")
 def get_group_players():
     users = db.players.find({"groupId":request.args.get("groupId")})
@@ -100,7 +98,7 @@ def get_group_players():
 
 @app.route("/get_groups")
 def get_user_groups():
-    userGroups = db.groups.find({"userId":session['id']})
+    userGroups = db.groups.find({"userId":sess.id})
     return dumps(list(userGroups))
 
 
