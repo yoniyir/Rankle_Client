@@ -31,7 +31,7 @@ def login():
         if users.find_one({"username": user["username"]}):
             currentUser = users.find_one({"username": user["username"],"password": user["password"]})
             if currentUser:
-                return jsonify({"status": "Ok","userId":str(currentUser['_id'])})
+                return jsonify({"status": "Ok","userId":str(currentUser['_id']),"name":f'{currentUser["f_name"]} {currentUser["l_name"]}'})
             else:
                 return jsonify({"status": "Error","message":"Incorrect password"})
         else:
@@ -47,10 +47,11 @@ def signup():
         user = request.form.to_dict()
         users = db.users
         if users.find_one({"username": user["username"]}):
-            return "Username is taken"
+            return jsonify({"status": "Error","msg":"Username is taken"})
         else:
             users.insert(user)
-            return f'{user["username"]} Signed-Up Sucssefully'
+
+            return jsonify({"status":"Ok"})
 
 
 
@@ -97,4 +98,17 @@ def get_user_groups():
 
 @app.route("/")
 def hello_world():
-    return redirect('/login')
+    return jsonify({"msg":"welcome to Teams App"})
+
+
+
+
+@app.route("/update_player", methods=["POST"])
+def update_player():
+    if request.method == "POST":
+        player = request.form.to_dict()
+        players = db.players
+        players.find_one_and_update({"name": player['name'],"groupId": player['groupId']},{'$set':{'rank':player['newRank']}})
+        return jsonify({"msg":"update complete"})
+        
+    

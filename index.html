@@ -1,28 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="buttons.css">
+    <link rel="stylesheet" href="table.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 </head>
+
 <body>
-  <title>Document</title>
-  <form onsubmit="return false" id="loginForm">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username"><br><br>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password"><br><br>
-      <button onclick="submitForm()">Submit</button>
-    </form>
+    <title>Teams App</title>
+    <div id="welcomePage">
+        <h1>Welcome to Teams App</h1>
+        <span>Already a user:</span>
+        <button class="bn632-hover bn25" onclick="moveToLogin()">Log in</button>
+        <span>New to the app:</span>
+        <button class="bn632-hover bn25" onclick="moveToSignUp()">Sign up</button>
 
 
-    <div id="teams">
     </div>
-    <div id="players" class="hidden">
 
+    <div id="loginPage" class="hidden">
+        <h2>Log In</h2>
+        <form class="form" onsubmit="return false" id="loginForm">
+            <input id="username" name="username" placeholder="Username">
+            <input type="password" id="password" name="password" placeholder="Password">
+            <button class="bn632-hover bn25" onclick="submitFormLogin()">Submit</button>
+        </form>
+        <span id="errorMsg"></span>
+    </div>
+
+    <div id="signUpPage" class="hidden">
+        <h2>Sign Up</h2>
+
+        <form class="form" onsubmit="return false" id="signUpForm">
+            <input placeholder="First Name" type="text" name="fname">
+            <input placeholder="Last Name" type="text" name="lname">
+            <input placeholder="Username" type="text" name="username">
+            <input placeholder="Password" type="password" name="password">
+            <button class="bn632-hover bn25" onclick="submitFormSignUp()">Submit</button>
+        </form>
+        <span id="errorMsg2"></span>
+    </div>
+
+
+
+
+
+    <div id="teamsPage" class="hidden">
+        <h2 id="welcome_user"></h2>
+        <button class="bn632-hover bn25" onclick="addTeam()">Create new team</button>
+        <h3>Here are your teams</h3>
+        <div id="teams">
+
+        </div>
+    </div>
+    <div id="playersPage" class="hidden">
+        <button class="back" onClick="back_from_players()">Back</button>
+        <div id="playersCont"></div>
+        <div class="hidden" id="editRank">
+        </div>
     </div>
     <button id="logOut" onclick="logOut()">Log Out</button>
 </body>
+
 </html>
