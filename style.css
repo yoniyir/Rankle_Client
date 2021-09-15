@@ -9,3 +9,7 @@ body{
     padding: 5px;
     background-color: grey;
 }
+
+.hidden{
+    display: none;
+}

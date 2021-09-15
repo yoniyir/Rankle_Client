@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify, redirect, session
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
-from flask_session import Session
-import random
 
 
 # db.<collection_name>.find_one() -> returns one object
@@ -22,8 +20,6 @@ app.secret_key = "testing"
 db = PyMongo(app).db
 app.config['SESSION_TYPE'] = 'filesystem'
 
-sess = Session(app)
-sess.init_app(app)
 
 
 
@@ -35,9 +31,7 @@ def login():
         if users.find_one({"username": user["username"]}):
             currentUser = users.find_one({"username": user["username"],"password": user["password"]})
             if currentUser:
-                sess.id=str(currentUser['_id'])
-                sess.username=f'{currentUser["username"]}'
-                return jsonify({"status": "Ok","userId":sess.id})
+                return jsonify({"status": "Ok","userId":str(currentUser['_id'])})
             else:
                 return jsonify({"status": "Error","message":"Incorrect password"})
         else:
@@ -56,8 +50,6 @@ def signup():
             return "Username is taken"
         else:
             users.insert(user)
-            session['id']=str(user['_id'])
-            session['username']=f'{user["username"]}'
             return f'{user["username"]} Signed-Up Sucssefully'
 
 
@@ -70,7 +62,6 @@ def add_group():
         if groups.find_one({"name":group["name"],"userId":group["userId"]}):
             return f'The name {group["name"]} exists!'
         else:
-            #to change to session
             groups.insert(group)
             return f'<h1>Sucssefully added {group["name"]}</h1>'
     
@@ -84,6 +75,7 @@ def add_player():
         if players.find_one({"name":player["name"],"groupId":player["groupId"]}):
             return f'The name {player["name"]} exists in {player["groupId"]}!'
         else:
+            player['rank']=0
             players.insert(player)
             return f'<h1>Sucssefully added {player["name"]} </h1>'
     
@@ -99,44 +91,10 @@ def get_group_players():
 
 @app.route("/get_groups")
 def get_user_groups():
-    userGroups = db.groups.find({"userId":sess.id})
+    userGroups = db.groups.find({"userId":request.args.get("userId")})
     return dumps(list(userGroups))
 
 
 @app.route("/")
 def hello_world():
     return redirect('/login')
-
-def Number_possible_Size_groups(active_players):
-    num = len(active_players)
-    lst1 = []
-    if num == 1:
-        return "no option to spilt to groups"
-    elif num == 2:
-        lst1.append(2)
-        return lst1
-    else:
-        num = int(num/2)
-        for i in range(2, num+1):
-            lst1.append(i)
-        return lst1
-
-
-def randomaize_The_Active_players(active_players,size):
-    lst =[]
-    num_of_active_players = int(len(active_players))
-    num_of_groups = int(num_of_active_players/size)
-    if num_of_active_players % size == 1:
-        other = random.choice(active_players)
-        active_players.remove(other)
-    else:
-        other = 0
-
-    for i in range(0,num_of_groups):
-        temp = []
-        for j in range(0,size):
-            random_player = random.choice(active_players)
-            temp.append(random_player)
-            active_players.remove(random_player)
-        lst.append(temp)
-    return lst , other
