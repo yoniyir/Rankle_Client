@@ -1,5 +1,4 @@
 import random
-import re
 
 
 def randomize_players(active_players, size):

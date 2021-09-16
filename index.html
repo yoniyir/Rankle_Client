@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="buttons.css">
     <link rel="stylesheet" href="table.css">
+    <link rel="stylesheet" href="checkbox.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 </head>
 
-<body>
+<body scroll="no">
     <title>Teams App</title>
     <div id="welcomePage">
         <h1>Welcome to Teams App</h1>
@@ -32,7 +35,9 @@
             <button class="bn632-hover bn25" onclick="submitFormLogin()">Submit</button>
         </form>
         <span id="errorMsg"></span>
-        <button class="back" onClick="back_to_welcome('loginPage')">Back</button>
+        <button class="back iconBtn" onClick="back_to_welcome('loginPage')"><i class="fas fa-arrow-left"></i>
+
+        </button>
     </div>
 
     <div id="signUpPage" class="hidden">
@@ -46,7 +51,7 @@
             <button class="bn632-hover bn25" onclick="submitFormSignUp()">Submit</button>
         </form>
         <span id="errorMsg2"></span>
-        <button class="back" onClick="back_to_welcome('signUpPage')">Back</button>
+        <button class="back iconBtn" onClick="back_to_welcome('signUpPage')">Back</button>
     </div>
 
     <div id="teamsPage" class="hidden">
@@ -59,8 +64,11 @@
     </div>
     <div id="playersPage" class="hidden">
         <h2 id="current_team"></h2>
-        <button class="bn632-hover bn25" onClick="addPlayer()">+</button>
-        <button class="back" onClick="back_from_players()">Back</button>
+        <button class="bn632-hover bn25 roundBtn" onClick="addPlayer()"><i class="fas fa-user-plus"></i></button>
+        <div class="selectAll"><label>Select All:</label><input id="select_all_checkbox" type="checkbox" onclick="selectAll()" /></div>
+        <button class="back iconBtn" onClick="back_from_players()"><i class="fas fa-arrow-left"></i>
+
+        </button>
         <div id="playersCont"></div>
         <div class="hidden" id="editRank"></div>
         <div class="hidden" id="addPlayer"></div>
@@ -74,10 +82,25 @@
             <button class="bn632-hover bn25" onclick="createNewTeam()">Create Team</button>
         </form>
         <span id="errorMsg3"></span>
-        <button class="back" onClick="back_to_teams()">Back</button>
+        <button class="back iconBtn" onClick="back_to_teams()"><i class="fas fa-arrow-left"></i>
+
+        </button>
     </div>
 
-    <button id="logOut" onclick="logOut()">Log Out</button>
+    <button class="iconBtn" id="logOut" onclick="logOut()"><i class="fas fa-sign-out-alt"></i>
+
+    </button>
+    <div id="randomizedPage" class="hidden">
+        <button class="back iconBtn" onClick="back_from_random()"><i class="fas fa-arrow-left"></i></button>
+        <h2>Teams Generated:</h2>
+        <div id="randomizedCont"></div>
+        <button class="bn632-hover bn25" onclick="randomize()">Randomize</button>
+        <button class="bn632-hover bn25" onclick="randomize_by_rank()">Randomize by rank</button>
+    </div>
+
+
+
+    <canvas class="background"></canvas>
 </body>
 
 </html>

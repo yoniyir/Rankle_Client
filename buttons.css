@@ -3,7 +3,7 @@
     font-size: 16px;
     color: #fff;
     cursor: pointer;
-    margin: 20px;
+    margin: 10px;
     height: 40px;
     text-align: center;
     border: none;
@@ -34,4 +34,33 @@
     width: 70px !important;
     font-size: 12px;
     background-image: linear-gradient( to right, #15314e, #1b7979, #2b5876, #4e4376);
+}
+
+.delBtn {
+    background-image: linear-gradient( to right, #9c1427, #ca3333, #400404, #640b0b) !important;
+}
+
+.iconBtn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    transition: 0.3s;
+}
+
+.iconBtn:hover {
+    background: none;
+    border: none;
+    color: #717171;
+    font-size: 26px;
+}
+
+.iconBtn2:hover {
+    color: white;
+    font-size: 22px;
+}
+
+.roundBtn {
+    border-radius: 30px;
+    width: 40px;
+    padding: 11px;
 }
