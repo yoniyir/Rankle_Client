@@ -32,6 +32,7 @@
             <button class="bn632-hover bn25" onclick="submitFormLogin()">Submit</button>
         </form>
         <span id="errorMsg"></span>
+        <button class="back" onClick="back_to_welcome('loginPage')">Back</button>
     </div>
 
     <div id="signUpPage" class="hidden">
@@ -45,11 +46,8 @@
             <button class="bn632-hover bn25" onclick="submitFormSignUp()">Submit</button>
         </form>
         <span id="errorMsg2"></span>
+        <button class="back" onClick="back_to_welcome('signUpPage')">Back</button>
     </div>
-
-
-
-
 
     <div id="teamsPage" class="hidden">
         <h2 id="welcome_user"></h2>
@@ -60,11 +58,25 @@
         </div>
     </div>
     <div id="playersPage" class="hidden">
+        <h2 id="current_team"></h2>
+        <button class="bn632-hover bn25" onClick="addPlayer()">+</button>
         <button class="back" onClick="back_from_players()">Back</button>
         <div id="playersCont"></div>
-        <div class="hidden" id="editRank">
-        </div>
+        <div class="hidden" id="editRank"></div>
+        <div class="hidden" id="addPlayer"></div>
+        <div class="hidden" id="groupsCount"></div>
     </div>
+
+    <div id="addTeam" class="hidden">
+        <h2>Create a new team</h2>
+        <form class="form" onsubmit="return false" id="createTeamForm">
+            <input name="teamName" placeholder="Team Name" required>
+            <button class="bn632-hover bn25" onclick="createNewTeam()">Create Team</button>
+        </form>
+        <span id="errorMsg3"></span>
+        <button class="back" onClick="back_to_teams()">Back</button>
+    </div>
+
     <button id="logOut" onclick="logOut()">Log Out</button>
 </body>
 

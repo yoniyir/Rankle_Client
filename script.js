@@ -121,6 +121,47 @@ function editRank(playerName) {
     `
 }
 
+function addPlayer() {
+    document.getElementById("addPlayer").classList.remove("hidden")
+    document.getElementById("playersCont").classList.add("blur")
+    document.getElementById("addPlayer").innerHTML = `
+    <div class="editCont">
+    <button onclick="close_add()">X</button>
+    <input type="text" placeholder="Player Name" name="playerName">
+    <div class="slidecontainer">
+    <input type="range" min="0" max="10" class="slider" oninput="changeRangePlayer()" id="myRangePlayer">
+    <p>Rank: <span id="demoPlayer"></span></p>
+    </div>
+    <button onclick="submit_new_player('${activeTeam}')">Save</button>
+    <label id="errorMsg3"></label>
+    </div>
+    `
+    activePlayers = [];
+}
+
+async function submit_new_player(activeTeam) {
+    let formData = new FormData();
+    let playerName = document.getElementsByName("playerName")[0].value
+    formData.append('groupId', activeTeam);
+    formData.append('name', playerName);
+    formData.append('rank', document.getElementById("myRangePlayer").value);
+
+
+    const response = await fetch('http://127.0.0.1:5000/add_player', {
+        method: 'POST',
+        body: formData
+    });
+    const responseText = await response.json();
+    if (responseText.status == "Ok") {
+        document.getElementById("addPlayer").classList.add("hidden");
+        document.getElementById("playersCont").classList.remove("blur")
+        document.getElementById("playersCont").innerHTML = '';
+        getPlayers(activeTeam);
+    } else {
+        document.getElementById("errorMsg3").innerText = responseText.msg;
+    }
+}
+
 
 async function updatePlayer(activeTeam, playerName) {
     let formData = new FormData();
@@ -148,6 +189,14 @@ function changeRange() {
     document.getElementById("demo").innerText = value
 }
 
+
+function changeRangePlayer() {
+    value = document.getElementById("myRangePlayer").value
+    document.getElementById("demoPlayer").innerText = value
+}
+
+
+
 function close_edit() {
     document.getElementById("editRank").innerHTML = "";
     document.getElementById("playersCont").classList.remove("blur")
@@ -155,10 +204,88 @@ function close_edit() {
 
 }
 
+function close_add() {
+    document.getElementById("addPlayer").innerHTML = "";
+    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("addPlayer").classList.add("hidden")
+
+}
+
+function close_groups_count() {
+    document.getElementById("groupsCount").innerHTML = "";
+    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("groupsCount").classList.add("hidden")
+
+}
 
 function check_groups_count() {
-    debugger
+    if (activePlayers.length <= 2) {
+        alert("Select more than 2 players");
+        return;
+    }
+    document.getElementById("groupsCount").classList.remove("hidden");
+    document.getElementById("playersCont").classList.add("blur")
+
+    let min = 2;
+    let max = Math.floor(activePlayers.length / 2);
+
+    document.getElementById("groupsCount").innerHTML = `
+    <div class="editCont">
+    <button onclick="close_groups_count()">X</button>
+    <div class="slidecontainer">
+    <input type="range" min="${min}" max="${max}" class="slider" oninput="changeCount()" id="myCountRange">
+    <p>Players in each group: <span id="demoCount">${max}</span></p>
+    </div>
+    <button onclick="randomize()">Randomize</button>
+    <button onclick="randomize_by_rank()">Randomize by rank</button>
+    <label id="errorMsg4"></label>
+    </div>
+    `
 }
+
+async function randomize() {
+    let formData = new FormData();
+    formData.append('activePlayers', activePlayers);
+    formData.append('group_size', document.getElementById("myCountRange").value)
+    const response = await fetch(`http://127.0.0.1:5000/randomize`, {
+        method: 'POST',
+        body: formData
+    })
+    const responseText = await response.json();
+    let randomized = JSON.parse(responseText.randomized)
+    let remaining = JSON.parse(responseText.remainder)
+        // for randomized e=>e.name
+    return;
+}
+
+
+
+async function randomize_by_rank() {
+    let formData = new FormData();
+    formData.append('activePlayers', activePlayers);
+    formData.append('group_size', document.getElementById("myCountRange").value)
+    const response = await fetch(`http://127.0.0.1:5000/randomize_by_rank`, {
+        method: 'POST',
+        body: formData
+    })
+    const responseText = await response.json();
+    let randomized = JSON.parse(responseText.randomized)
+    let remaining = JSON.parse(responseText.remainder)
+        // for randomized e=>e.name
+    return;
+
+}
+
+
+
+
+
+function changeCount() {
+    value = document.getElementById("myCountRange").value
+    document.getElementById("demoCount").innerText = value
+}
+
+
 
 function add_to_random(player_id) {
     if (activePlayers.includes(player_id)) {
@@ -170,6 +297,8 @@ function back_from_players() {
     document.getElementById("teamsPage").classList.remove("hidden")
     document.getElementById("playersPage").classList.add("hidden")
     document.getElementById("playersCont").innerHTML = ""
+    document.getElementById("teams").innerText = ""
+    getGroups(userId)
     activePlayers = [];
 
 }
@@ -225,4 +354,44 @@ function moveToSignUp() {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function back_to_welcome(pageId) {
+
+    document.getElementById(pageId).classList.add("hidden");
+    document.getElementById("welcomePage").classList.remove("hidden");
+
+}
+
+function back_to_teams() {
+
+}
+
+function addTeam() {
+    document.getElementById("addTeam").classList.remove("hidden");
+    document.getElementById("teamsPage").classList.add("hidden");
+
+}
+
+async function createNewTeam() {
+    let teamName = document.getElementsByName("teamName")[0].value;
+    if (!teamName) {
+        return;
+    }
+    let formData = new FormData();
+    formData.append('name', teamName);
+    formData.append('userId', `${userId}`);
+    const response = await fetch(`http://127.0.0.1:5000/add_group`, {
+        method: 'POST',
+        body: formData
+    })
+    const responseText = await response.json();
+    if (responseText.status != "Ok") {
+        document.getElementById("errorMsg3").innerText = responseText.msg;
+
+    } else {
+        document.getElementById("addTeam").classList.add("hidden");
+        getPlayers(responseText.activeTeam._id);
+
+    }
 }

@@ -69,6 +69,7 @@ body {
 #teams {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .teamName label {
@@ -93,6 +94,44 @@ th {
 }
 
 #editRank {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 30px;
+    line-height: 1;
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+    width: 300px;
+    position: absolute;
+    margin: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+    top: 50px;
+    box-shadow: 0px 4px 26px 3px rgba(0, 0, 0, 0.75);
+}
+
+#groupsCount {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 30px;
+    line-height: 1;
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+    width: 300px;
+    position: absolute;
+    margin: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+    top: 50px;
+    box-shadow: 0px 4px 26px 3px rgba(0, 0, 0, 0.75);
+}
+
+#addPlayer {
     background-color: rgba(255, 255, 255, 0.3) !important;
     border-radius: 30px;
     line-height: 1;
@@ -148,4 +187,16 @@ th {
 
 .blur {
     filter: blur(12px);
+}
+
+#addTeam {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.editCont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
