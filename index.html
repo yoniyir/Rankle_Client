@@ -17,8 +17,11 @@
 
 <body scroll="no">
     <title>Teams App</title>
-    <div id="welcomePage">
-        <h1>Welcome to Teams App</h1>
+    <div class="loadingScreen hidden" id="loadingScreen">
+        <img src="Loading.svg" class="hv-middle" alt="Loading...">
+    </div>
+    <div id="welcomePage" class="hv-middle">
+        <img src="Logo_Transparent.png" alt="Rankle" id="welcome_logo">
         <span>Already a user:</span>
         <button class="bn632-hover bn25" onclick="moveToLogin()">Log in</button>
         <span>New to the app:</span>
@@ -28,20 +31,22 @@
     </div>
 
     <div id="loginPage" class="hidden">
-        <h2>Log In</h2>
+        <div class="hv-middle">
+        <h2 style="text-align:center;">Log In</h2>
         <form class="form" onsubmit="return false" id="loginForm">
             <input id="username" name="username" placeholder="Username">
             <input type="password" id="password" name="password" placeholder="Password">
-            <button class="bn632-hover bn25" onclick="submitFormLogin()">Submit</button>
+            <button class="bn632-hover bn25" onclick="submitFormLogin()">Log-In</button>
         </form>
         <span id="errorMsg"></span>
+        </div>
         <button class="back iconBtn" onClick="back_to_welcome('loginPage')"><i class="fas fa-arrow-left"></i>
-
         </button>
     </div>
 
     <div id="signUpPage" class="hidden">
-        <h2>Sign Up</h2>
+        <div class="hv-middle">
+        <h2 style="text-align:center;">Sign Up</h2>
 
         <form class="form" onsubmit="return false" id="signUpForm">
             <input placeholder="First Name" type="text" name="fname">
@@ -51,7 +56,8 @@
             <button class="bn632-hover bn25" onclick="submitFormSignUp()">Submit</button>
         </form>
         <span id="errorMsg2"></span>
-        <button class="back iconBtn" onClick="back_to_welcome('signUpPage')">Back</button>
+        </div>
+        <button class="back iconBtn" onClick="back_to_welcome('signUpPage')"><i class="fas fa-arrow-left"></i></button>
     </div>
 
     <div id="teamsPage" class="hidden">
@@ -63,16 +69,20 @@
         </div>
     </div>
     <div id="playersPage" class="hidden">
+        <button class="back iconBtn" onClick="back_from_players()"><i class="fas fa-arrow-left"></i></button>
+
+
         <h2 id="current_team"></h2>
+        <div style="text-align-last: center;" id="players_toblur">
         <button class="bn632-hover bn25 roundBtn" onClick="addPlayer()"><i class="fas fa-user-plus"></i></button>
         <div class="selectAll"><label>Select All:</label><input id="select_all_checkbox" type="checkbox" onclick="selectAll()" /></div>
-        <button class="back iconBtn" onClick="back_from_players()"><i class="fas fa-arrow-left"></i>
 
-        </button>
         <div id="playersCont"></div>
-        <div class="hidden" id="editRank"></div>
-        <div class="hidden" id="addPlayer"></div>
-        <div class="hidden" id="groupsCount"></div>
+        <button class="bn632-hover bn25 roundBtn" onClick="check_groups_count()"><i class="fas fa-random"></i></button></div>
+        <div class="hidden hv-middle" id="editRank"></div>
+        <div class="hidden hv-middle" id="addPlayer"></div>
+        
+        <div class="hidden hv-middle" id="groupsCount"></div>
     </div>
 
     <div id="addTeam" class="hidden">

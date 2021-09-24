@@ -99,25 +99,25 @@ async function getPlayers(teamId) {
     const responseText = await response.json();
     document.getElementById("teamsPage").classList.add("hidden")
     let players_page = `<table>
+    <thead>
     <tr>
-    <th>Name</th><th>Rank</th><th>Active</th><th>Edit Rank</th><th>Remove</th></tr>
+    <th>Name</th><th>Rank</th><th>Active</th><th>Edit</th></tr></thead><tbody>
     `
     for (let i = 0; i < responseText.length; i++) {
         const player = responseText[i];
         players_page += `<tr>
         <td>${player.name}</td><td>${player.rank}</td><td><input name="checkbox_add" value="${player._id.$oid}" type="checkbox" onclick="add_to_random('${player._id.$oid}')"></input></td>
-        <td><button class="iconBtn iconBtn2" onclick="editRank('${player.name}',${player.rank})"><i class="fas fa-edit"></i></button></td>
-        <td><button class="iconBtn iconBtn2" onclick="removePlayer('${player._id.$oid}')"><i class="fas fa-trash"></i></button></td>
+        <td class="fixed_td"><button class="iconBtn iconBtn2" onclick="editRank('${player.name}',${player.rank})"><i class="fas fa-edit"></i></button>
+        <button class="iconBtn iconBtn2" onclick="removePlayer('${player._id.$oid}')"><i class="fas fa-trash"></i></button>
+        </td>
         </tr>`
 
     }
-    players_page += `</table>
-    <button class="bn632-hover bn25 roundBtn" onClick="check_groups_count()"><i class="fas fa-random"></i></button>
+    players_page += `</tbody></table>
     `
     let playersTable = document.getElementById("playersCont");
     document.getElementById("playersPage").classList.remove("hidden");
     playersTable.innerHTML = players_page;
-    console.log(responseText)
 }
 
 
@@ -130,6 +130,7 @@ function selectAll() {
             return;
         } else {
             e.checked = "true";
+            document.getElementById("select_all_checkbox").checked = true;
             activePlayers.push(e.value);
         }
     })
@@ -165,7 +166,7 @@ async function removeTeam(teamId) {
 
 function editRank(playerName, currentRank) {
     document.getElementById("editRank").classList.remove("hidden")
-    document.getElementById("playersCont").classList.add("blur")
+    document.getElementById("players_toblur").classList.add("blur")
     document.getElementById("editRank").innerHTML = `
     <div class="editCont">
     <button class="iconBtn" onclick="close_edit()"><i class="fas fa-times-circle"></i></button>
@@ -181,7 +182,7 @@ function editRank(playerName, currentRank) {
 
 function addPlayer() {
     document.getElementById("addPlayer").classList.remove("hidden")
-    document.getElementById("playersCont").classList.add("blur")
+    document.getElementById("players_toblur").classList.add("blur")
     document.getElementById("addPlayer").innerHTML = `
     <div class="editCont">
     <button class="iconBtn" onclick="close_add()"><i class="fas fa-times-circle"></i></button>
@@ -190,7 +191,7 @@ function addPlayer() {
     <input type="range" min="0" max="10" class="slider" oninput="changeRangePlayer()" id="myRangePlayer" value=5>
     <p>Rank: <span id="demoPlayer">5</span></p>
     </div>
-    <button onclick="submit_new_player('${activeTeam}')">Save</button>
+    <button class="bn632-hover bn25" onclick="submit_new_player('${activeTeam}')">Add Player</button>
     <label id="errorMsg3"></label>
     </div>
     `
@@ -212,7 +213,7 @@ async function submit_new_player(activeTeam) {
     const responseText = await response.json();
     if (responseText.status == "Ok") {
         document.getElementById("addPlayer").classList.add("hidden");
-        document.getElementById("playersCont").classList.remove("blur")
+        document.getElementById("players_toblur").classList.remove("blur")
         document.getElementById("playersCont").innerHTML = '';
         getPlayers(activeTeam);
     } else {
@@ -234,7 +235,7 @@ async function updatePlayer(activeTeam, playerName) {
     });
     const responseText = await response.json();
     document.getElementById("editRank").classList.add("hidden");
-    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("players_toblur").classList.remove("blur")
     document.getElementById("playersCont").innerHTML = '';
 
     getPlayers(activeTeam);
@@ -257,21 +258,21 @@ function changeRangePlayer() {
 
 function close_edit() {
     document.getElementById("editRank").innerHTML = "";
-    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("players_toblur").classList.remove("blur")
     document.getElementById("editRank").classList.add("hidden")
 
 }
 
 function close_add() {
     document.getElementById("addPlayer").innerHTML = "";
-    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("players_toblur").classList.remove("blur")
     document.getElementById("addPlayer").classList.add("hidden")
 
 }
 
 function close_groups_count() {
     document.getElementById("groupsCount").innerHTML = "";
-    document.getElementById("playersCont").classList.remove("blur")
+    document.getElementById("players_toblur").classList.remove("blur")
     document.getElementById("groupsCount").classList.add("hidden")
 
 }
@@ -282,7 +283,7 @@ function check_groups_count() {
         return;
     }
     document.getElementById("groupsCount").classList.remove("hidden");
-    document.getElementById("playersCont").classList.add("blur")
+    document.getElementById("players_toblur").classList.add("blur")
 
     let min = 2;
     let max = Math.floor(activePlayers.length / 2);
@@ -386,6 +387,7 @@ function back_from_players() {
 
 
 async function getGroups() {
+    loading();
     const response = await fetch(`http://127.0.0.1:5000/get_groups?userId=${userId}`, {
         method: 'GET'
     })
@@ -402,8 +404,8 @@ async function getGroups() {
     document.getElementById("teamsPage").classList.remove("hidden");
     let name = localStorage.getItem('name').split(" ")
     document.getElementById("welcome_user").innerText = `Hello ${capitalizeFirstLetter(name[0])} ${capitalizeFirstLetter(name[1])}`
-
     document.getElementById("teams").innerHTML = str;
+    loading();
 }
 
 
@@ -483,4 +485,15 @@ function back_from_random() {
     document.getElementById("randomizedCont").innerHTML = '';
     document.getElementById("playersPage").classList.remove("hidden");
     document.getElementById("randomizedPage").classList.add("hidden");
+}
+
+
+function loading(){
+    let loading = document.getElementById("loadingScreen");
+    if (loading.classList.contains("hidden")){
+        loading.classList.remove("hidden");
+        }
+    else {
+        loading.classList.add("hidden");
+    }
 }
